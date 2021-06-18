@@ -14,7 +14,7 @@ export default function Home({posts}) {
 
       <div className="space-y-4">
         {posts.map((item) => (
-          <BlogListItem key={item.slug} {...item} />
+          <BlogListItem key={item.slug} {...item} /> 
         ))}
       </div>
 
@@ -22,23 +22,21 @@ export default function Home({posts}) {
   )
 }
 
-export async function getStaticProps(context) {
-  const { params } = context
+export async function getStaticProps() {
   const allPosts = getAllPosts()
-  // const {data, content} = allPosts.find((item) => item.slug === params.slug)
-  // console.log(data, content)
   return {
     props: {
-      posts: allPosts.map(({data, content}) => ({
+      posts: allPosts.map(({data, content, slug}) => ({
         ...data,
       date: data.date.toISOString(),
-      content: content
+      content,
+      slug,
       })),
     }
   }
 }
 
-function BlogListItem({slug, title, date, content}) {
+function BlogListItem({slug, title, date, content, description}) {
   return (
     <div className="border border-gray-100 shadow hover:shadow-md hover:border-gray-200 rounded-md p-4 transition duration-200 ease-in">
       <div>
@@ -49,7 +47,7 @@ function BlogListItem({slug, title, date, content}) {
       <div className="text-gray-600 text-xs">
         {format(parseISO(date), 'MMMM do, uuu')}
       </div>
-    <div>{content}</div>
+    <div>{description}</div>
   </div>
   )
 }
