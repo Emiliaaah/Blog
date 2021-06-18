@@ -7,7 +7,7 @@ function MyApp({ Component, pageProps }) {
       <header>
       <h1 className="text-6xl my-8 font-bold text-center">My Blog</h1>
       <nav>
-        <ul className="flex flex-row justify-center space-x-4">
+        <ul className="flex flex-row font-bold justify-center space-x-4">
           <li>
             <Link href='/'>
               <a className="">Home</a>

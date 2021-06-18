@@ -1,8 +1,10 @@
 import Head from 'next/head'
 import Link from 'next/link'
-import { blogPosts } from '../lib/data'
+import {format, parseISO } from 'date-fns'
+import { getAllPosts } from '../lib/data'
+// import { blogPosts } from '../lib/data'
 
-export default function Home() {
+export default function Home({posts}) {
   return (
     <div >
       <Head>
@@ -10,24 +12,45 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main >
-        <h1>My Blog</h1>
-      </main>
-
-      <div>
-        {blogPosts.map((item) => (
-          <div key={item.slug}>
-            <div>
-              <Link href={`/blog/${item.slug}`}>
-                <a>{item.title}</a>
-              </Link>
-            </div>
-            <div>{item.date.toString()}</div>
-            <div>{item.content}</div>
-          </div>
+      <div className="space-y-4">
+        {posts.map((item) => (
+          <BlogListItem key={item.slug} {...item} />
         ))}
       </div>
 
     </div>
   )
 }
+
+export async function getStaticProps(context) {
+  const { params } = context
+  const allPosts = getAllPosts()
+  // const {data, content} = allPosts.find((item) => item.slug === params.slug)
+  // console.log(data, content)
+  return {
+    props: {
+      posts: allPosts.map(({data, content}) => ({
+        ...data,
+      date: data.date.toISOString(),
+      content: content
+      })),
+    }
+  }
+}
+
+function BlogListItem({slug, title, date, content}) {
+  return (
+    <div className="border border-gray-100 shadow hover:shadow-md hover:border-gray-200 rounded-md p-4 transition duration-200 ease-in">
+      <div>
+        <Link href={`/blog/${slug}`}>
+          <a className="text-lg font-bold">{title}</a>
+        </Link>
+      </div>
+      <div className="text-gray-600 text-xs">
+        {format(parseISO(date), 'MMMM do, uuu')}
+      </div>
+    <div>{content}</div>
+  </div>
+  )
+}
+
